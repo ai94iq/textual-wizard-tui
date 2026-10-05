@@ -1,5 +1,7 @@
 # tui-guidelines
 
+[![check](https://github.com/ai94iq/textual-wizard-tui/actions/workflows/check.yml/badge.svg)](https://github.com/ai94iq/textual-wizard-tui/actions/workflows/check.yml)
+
 A Claude Code skill: rules for terminal user interfaces that work for someone
 who has never seen them -- wizard flows, validation, back navigation, keys,
 state without colour, sizing, slow work, the exit receipt, headless tests.
