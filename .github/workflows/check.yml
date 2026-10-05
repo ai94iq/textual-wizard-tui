@@ -3,6 +3,12 @@ name: check
 on:
   push:
   pull_request:
+  # Weekly against the newest Textual, to hear about a break in the private
+  # markers the template uses before someone copying it does. Runs on the
+  # default branch only; GitHub pauses it after 60 days without activity.
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
 
 jobs:
   check:
@@ -22,5 +28,6 @@ jobs:
         with:
           python-version: "3.12"
       # Pinned: the template leans on Textual's private ToggleButton markers.
-      - run: python -m pip install textual==8.2.8
+      # The weekly run takes the newest release instead.
+      - run: python -m pip install "${{ github.event_name == 'schedule' && 'textual' || 'textual==8.2.8' }}"
       - run: sh check.sh
