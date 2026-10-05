@@ -16,6 +16,8 @@ if [ -n "$PY" ] && "$PY" -c 'import textual' >/dev/null 2>&1; then
   else
     echo "FAIL    $PY assets/wizard_template.py selftest"; fail=1
   fi
+elif [ -n "${CI:-}" ]; then
+  echo "FAIL    no python with textual in CI -- the selftest must run here"; fail=1
 else
   echo "skip    selftest (no python with textual here)"
 fi
