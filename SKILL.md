@@ -29,6 +29,10 @@ and `python assets/wizard_template.py selftest` proves it headlessly.
 - **Never require the TUI.** Every answer the TUI collects must also be
   passable as flags or a config file, so CI and repeat runs skip it. Offer to
   save the answers as that config at the end.
+- **No terminal, no TUI.** If stdin or stdout is not a TTY (piped, cron, CI,
+  an IDE task runner), never open the TUI: run from flags/config, or exit
+  non-zero with one line naming the flags to pass. A TUI drawn into a pipe
+  hangs the job or fills a log with escape codes.
 - **No arguments opens the TUI**, not a usage message. Someone who ran the
   launcher wants to be asked, not lectured. Pre-fill what you can discover
   (nearby files, defaults from the input).
@@ -76,6 +80,9 @@ its fields and a `submit()`. Consequences:
 - **Focus lands on the first input** when a step opens. If a scroll container
   takes focus, the first keystrokes go nowhere — the first thing a new user
   tries is typing.
+- **Keyboard-only is complete.** Every action a click does, a key does too.
+  Mouse support is a convenience; many terminals (SSH, tmux, screen readers)
+  send no mouse events.
 - **Bulk keys for lists**: `a` ticks/unticks all, shown in the footer.
 - **Trim framework extras** you do not support (help panels listing
   platform-specific keys, screenshot commands). Every key shown must work on
@@ -90,6 +97,9 @@ its fields and a `submit()`. Consequences:
 - Unchosen markers must be as readable as their labels (no dim-on-dim).
 - No pictograms a terminal may not have (magnifying glass, emoji): they draw
   as boxes. Plain ASCII markers work everywhere.
+- **Honour `NO_COLOR`** (no-color.org): when it is set, draw no colour.
+  Some frameworks do it for you (Textual goes monochrome); check yours. This
+  is where the text markers above stop being optional.
 - Themes are fine; correctness must not depend on one.
 
 ## 6. Size and layout
@@ -161,12 +171,14 @@ fail. Pin the framework version — widget internals the markers rely on
 ## Review checklist
 
 - [ ] Every TUI answer also reachable by flag/config
+- [ ] No TTY: no TUI, clear message or flag-driven run
 - [ ] One base screen owns chrome, keys, validation
 - [ ] Validation on submit, messages say what to do
 - [ ] Back keeps answers; first step's Back is Cancel
 - [ ] Enter/Escape/Ctrl+C behave on every screen; footer is truthful
 - [ ] Focus starts in the first field
-- [ ] Chosen state visible without colour
+- [ ] Every action reachable from the keyboard
+- [ ] Chosen state visible without colour; `NO_COLOR` honoured
 - [ ] Relative sizes, narrow fold, honest size floor
 - [ ] Slow work off the UI thread, behind a timed busy screen
 - [ ] Done screen + stdout receipt + meaningful exit code

@@ -338,6 +338,10 @@ if __name__ == "__main__":
     if sys.argv[1:] == ["selftest"]:
         asyncio.run(selftest())
         print("ok")
+    elif not (sys.stdin.isatty() and sys.stdout.isatty()):
+        # No terminal: drawing a TUI into a pipe hangs the job. Say what to pass.
+        sys.exit("No terminal here - this wizard needs one. "
+                 "In scripts, pass the answers as flags instead.")
     else:
         result = run_wizard()
         # The alternate screen is gone now; the receipt is what survives.
